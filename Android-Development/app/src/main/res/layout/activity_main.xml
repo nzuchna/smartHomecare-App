@@ -9,11 +9,11 @@
 
     <ImageView
         android:id="@+id/imgLogo"
-        android:layout_width="163dp"
-        android:layout_height="136dp"
+        android:layout_width="99dp"
+        android:layout_height="78dp"
         android:layout_marginBottom="8dp"
         android:contentDescription="@string/contentLogof1"
-        app:layout_constraintBottom_toTopOf="@+id/txtTitle"
+        app:layout_constraintBottom_toTopOf="@+id/edtEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,13 +30,15 @@
         android:fontFamily="@font/ubuntu"
         android:hint="@string/e_mail"
         android:inputType="textEmailAddress"
+        android:selectAllOnFocus="true"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/colorPrimary"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/edtPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo" />
 
     <!-- Password Label -->
     <EditText
@@ -48,6 +50,7 @@
         android:fontFamily="@font/ubuntu"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:selectAllOnFocus="true"
         android:textColor="@color/colorPrimary"
         android:textColorHint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/cbxStaySignedIn"
@@ -57,20 +60,6 @@
         app:layout_constraintTop_toBottomOf="@+id/edtEmail" />
 
     <!-- smartHomecare Titel -->
-    <TextView
-        android:id="@+id/txtTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:fontFamily="@font/ubuntu"
-        android:text="@string/apptitle"
-        android:textColor="@color/colorPrimary"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/edtEmail"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgLogo" />
 
     <!-- Sign-in Button -->
     <Button
@@ -96,6 +85,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:checked="false"
+        android:focusable="auto"
         android:fontFamily="@font/ubuntu"
         android:text="@string/stay_signed_in"
         android:textColor="@color/colorPrimary"
