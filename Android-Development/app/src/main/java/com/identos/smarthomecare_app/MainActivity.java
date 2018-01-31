@@ -86,10 +86,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-                setContentView(R.layout.activity_monitoring);
+                setContentView(R.layout.activity_beacon);
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
-                Intent intent = new Intent(this, MonitoringActivity.class);
+                Intent intent = new Intent(this, BeaconActivity.class);
                 // TODO: Put login information into intend with the following code...
                 //EditText editText = (EditText) findViewById(R.id.editText);
                 //String message = editText.getText().toString();
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLoginSuccess() {
         btnSignIn.setEnabled(true);
-        Intent intent = new Intent(this, MonitoringActivity.class);
+        Intent intent = new Intent(this, BeaconActivity.class);
         startActivity(intent);
         //finish();
     }
