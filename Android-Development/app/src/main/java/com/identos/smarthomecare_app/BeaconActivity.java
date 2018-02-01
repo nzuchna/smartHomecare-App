@@ -61,8 +61,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
 
         //Creating a beacon manager which manages all the beacons
         beaconManager = BeaconManager.getInstanceForApplication(this);
-        //beaconManager.getBeaconParsers().add(new BeaconParser().
-          //      setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         beaconManager.setBackgroundScanPeriod(1000);
         beaconManager.setBackgroundBetweenScanPeriod(1);
 
@@ -212,7 +212,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     // This is the function which is called whenever the bind() function is called.
     @Override
     public void onBeaconServiceConnect() {
-        beaconManager.setBackgroundScanPeriod(100);
+        beaconManager.setBackgroundScanPeriod(1000);
         beaconManager.setBackgroundBetweenScanPeriod(1);
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
