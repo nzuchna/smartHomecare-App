@@ -62,10 +62,17 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
 
         //Creating a beacon manager which manages all the beacons
         beaconManager = BeaconManager.getInstanceForApplication(this);
+<<<<<<< HEAD
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
         beaconManager.setBackgroundScanPeriod(10);
         beaconManager.setBackgroundBetweenScanPeriod(2000);
+=======
+        //beaconManager.getBeaconParsers().add(new BeaconParser().
+          //      setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
+        beaconManager.setBackgroundScanPeriod(1000);
+        beaconManager.setBackgroundBetweenScanPeriod(1);
+>>>>>>> parent of 4e5d9c0... Fixed BeaconActivity ScrollView
 
         //Assigning functions to be executed on pressing the buttons
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -213,9 +220,14 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     // This is the function which is called whenever the bind() function is called.
     @Override
     public void onBeaconServiceConnect() {
+<<<<<<< HEAD
         beaconManager.setBackgroundScanPeriod(1);
         beaconManager.setBackgroundBetweenScanPeriod(2000);
         Log.i(TAG1, "Periods are set!");
+=======
+        beaconManager.setBackgroundScanPeriod(100);
+        beaconManager.setBackgroundBetweenScanPeriod(1);
+>>>>>>> parent of 4e5d9c0... Fixed BeaconActivity ScrollView
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
