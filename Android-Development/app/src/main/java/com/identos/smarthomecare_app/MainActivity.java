@@ -45,11 +45,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: Implement: Stay signed in function
     }
 
-    public void scanBLEDevices(View view){
-            Intent intent = new Intent(this, MonitoringActivity.class);
-            startActivity(intent);
-    }
-
     public void login() {
         Log.d(TAG, "Login");
 
