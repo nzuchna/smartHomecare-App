@@ -69,13 +69,15 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/linearLayout"
-        android:layout_width="382dp"
+        android:layout_width="331dp"
         android:layout_height="0dp"
         android:layout_above="@+id/markButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="31dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="16dp"
         app:layout_constraintBottom_toTopOf="@+id/exportButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -92,14 +94,15 @@
             android:text="">
 
             <LinearLayout
+                android:id="@+id/linScrollLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
                 <TextView
                     android:id="@+id/timeStamp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="5dp"
                     android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:gravity="bottom"
@@ -107,7 +110,7 @@
 
                 <TextView
                     android:id="@+id/address"
-                    android:layout_width="wrap_content"
+                    android:layout_width="10dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:gravity="bottom"
@@ -115,7 +118,7 @@
 
                 <TextView
                     android:id="@+id/rssi"
-                    android:layout_width="wrap_content"
+                    android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="bottom"
@@ -123,7 +126,7 @@
 
                 <TextView
                     android:id="@+id/mark"
-                    android:layout_width="wrap_content"
+                    android:layout_width="10dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="bottom"
