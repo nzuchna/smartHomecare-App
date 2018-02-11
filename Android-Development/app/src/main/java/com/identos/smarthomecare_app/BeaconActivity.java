@@ -38,7 +38,6 @@ import java.util.List;
 public class BeaconActivity extends Activity implements BeaconConsumer {
 
     public static final String TAG = "BeaconsEverywhere";
-    public static final String TAG1 = "Get your shit together";
     private BeaconManager beaconManager;
     public int clickCount = 0;
     public long baseTime = 0, timeStamp = 0;
@@ -64,8 +63,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
         beaconManager = BeaconManager.getInstanceForApplication(this);
         beaconManager.getBeaconParsers().add(new BeaconParser().
                 setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
-        beaconManager.setBackgroundScanPeriod(10);
-        beaconManager.setBackgroundBetweenScanPeriod(2000);
+        beaconManager.setBackgroundScanPeriod(1000);
+        beaconManager.setBackgroundBetweenScanPeriod(1);
 
         //Assigning functions to be executed on pressing the buttons
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -213,9 +212,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     // This is the function which is called whenever the bind() function is called.
     @Override
     public void onBeaconServiceConnect() {
-        beaconManager.setBackgroundScanPeriod(1);
-        beaconManager.setBackgroundBetweenScanPeriod(2000);
-        Log.i(TAG1, "Periods are set!");
+        beaconManager.setBackgroundScanPeriod(1000);
+        beaconManager.setBackgroundBetweenScanPeriod(1);
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
@@ -229,8 +227,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                     //       beaconParserList.get(1).getBeaconAdvertisementData()
                     //)));
                     for (int i = 0; i < s; i++) {
-                        Log.i(TAG, "ParserID:"+beaconArr[i].getParserIdentifier()+" Data: " + beaconArr[i].getDataFields()
-                              + " toString: " + beaconArr[i].toString() + " UUID: " + beaconArr[i].getServiceUuid() + "Extra Data Fields:" + beaconArr[i].getExtraDataFields());
+                        //Log.i(TAG, "Time:"+timeStamp+" Address: " + beaconArr[i].getBluetoothAddress()
+                        //      + " RSSI: " + beaconArr[i].getRssi() + " Marker: " + clickCount);
                         logToDisplay(Long.toString(timeStamp),              //Adding the information to the screen
                                 beaconArr[i].getBluetoothAddress(),
                                 Integer.toString(beaconArr[i].getRssi()),
