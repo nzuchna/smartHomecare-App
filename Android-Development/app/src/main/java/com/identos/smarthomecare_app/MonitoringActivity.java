@@ -117,6 +117,7 @@ public class MonitoringActivity extends AppCompatActivity implements BeaconConsu
             }
         });
     }
+
     private void verifyBluetooth() {
 
         try {

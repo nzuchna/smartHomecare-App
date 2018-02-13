@@ -1,5 +1,8 @@
 package com.identos.smarthomecare_app;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,16 +32,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import io.realm.Realm;
+
 /*******************************************
 
  Refer to this website to get started with the Android beacon library:- https://altbeacon.github.io/android-beacon-library/
+
+ Structure of class:
+ Attributes:
+ - BeaconManager beaconManager
+ -
+ Methods:
+ - OnCreate():
+    - no content view
+    - beaconManager init
+    - Realm init
 
  ********************************************/
 
 public class BeaconActivity extends Activity implements BeaconConsumer {
 
-    public static final String TAG = "BeaconsEverywhere";
+    protected static final String TAG = "BeaconsEverywhere";
+    private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private BeaconManager beaconManager;
+
     public int clickCount = 0;
     public long baseTime = 0, timeStamp = 0;
     public List<String[]> data = new ArrayList<>();
@@ -47,24 +64,31 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //TODO : Run BeaconActivity in the background(without content view), also when app is closed
         setContentView(R.layout.activity_beacon);
 
-        //Checking the compatibility of the device.
-        verifyBluetooth();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android M Permission check
+            if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+                builder.setTitle("This app needs location access");
+                builder.setMessage("Please grant location access so this app can detect beacons.");
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+                    }
+                });
+                builder.show();
+            }
+        }
 
-        //Instantiating the buttons
+        //TEST-PHASE: Instantiating the buttons
         Button startButton = (Button) findViewById(R.id.startButton);
         Button stopButton = (Button) findViewById(R.id.stopButton);
         Button markButton = (Button) findViewById(R.id.markButton);
-        Button exportButton = (Button) findViewById(R.id.exportButton);
         Button clearButton = (Button) findViewById(R.id.clearButton);
-
-        //Creating a beacon manager which manages all the beacons
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-        beaconManager.getBeaconParsers().add(new BeaconParser().
-                setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
-        beaconManager.setBackgroundScanPeriod(1000);
-        beaconManager.setBackgroundBetweenScanPeriod(1);
 
         //Assigning functions to be executed on pressing the buttons
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -95,33 +119,33 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
             }
         });
 
-        exportButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    EditText filename = (EditText) findViewById(R.id.filename); //Fetching the file name entered by the user
-                    exportData(filename.getText().toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        //beaconManager init
+
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        // To detect proprietary beacons, you must add a line like below corresponding to your beacon
+        // type.  Do a web search for "setBeaconLayout" to get the proper expression.
+        beaconManager.getBeaconParsers().add(new BeaconParser().
+                setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
+        beaconManager.bind(this);
+        beaconManager.setBackgroundScanPeriod(1000);
+        beaconManager.setBackgroundBetweenScanPeriod(1);
+
+        //Checking the compatibility of the device.
+        verifyBluetooth();
+
+        //Realm init
+
+        // Initialize Realm (just once per application)
+        Realm.init(context);
+
+        //TODO: Own class for DB Con's? or just methods??
+        // Get a Realm instance for this thread
+        ///Realm realm = Realm.getDefaultInstance();
     }
 
     //Start the scan for beacons (On pressing the 'Start' Button)
     public void binding() {
         if (!beaconManager.isBound(this)) {
-
-            /*
-            Notification notification = new Notification(R.mipmap.ic_launcher,
-                    context.getString(R.string.app_name),
-                    System.currentTimeMillis());
-            notification.flags |= Notification.FLAG_NO_CLEAR
-                    | Notification.FLAG_ONGOING_EVENT;
-            NotificationManager notifier = (NotificationManager)
-                    context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notifier.notify(1, notification);*/
-
             baseTime = System.currentTimeMillis(); //Variable which is used for maintaining the timestamps of the packets
             raiseAtoast(R.string.startToast);
             data.add(new String[]{"Timestamp", "MAC Address", "RSSI (in dBm)", "Mark"}); //Setting the header for the data file which will stored later on as a csv
@@ -316,6 +340,17 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     private void raiseAtoast(int resID) {
         Toast.makeText(context, context.getString(resID),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private void timestampToDatabase(Timestamp timestamp){
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        final Timestamp managedTimestamp = realm.copyToRealm(timestamp); // Persist unmanaged objects
+        Timestamp timestamp1 = realm.createObject(Person.class); // Create managed objects directly
+        person.getDogs().add(managedDog);
+        realm.commitTransaction();
+
     }
 
 }
