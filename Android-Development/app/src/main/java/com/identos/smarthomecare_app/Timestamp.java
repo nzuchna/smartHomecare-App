@@ -16,16 +16,17 @@ public class Timestamp extends RealmObject {
     private int id;
     private int Employee_ID;
     private int Client_ID;
-    private Date date;
-    private Time arrival;
-    private Time departure;
+    private String arrival;
+    private String departure;
 
-    public Timestamp(int employee_ID, int client_ID, Date date, Time arrival, Time departure) {
+    public Timestamp(int employee_ID, int client_ID, String arrival, String departure) {
         Employee_ID = employee_ID;
         Client_ID = client_ID;
-        this.date = date;
         this.arrival = arrival;
         this.departure = departure;
+    }
+
+    public Timestamp() {
     }
 
     public int getEmployee_ID() {
@@ -44,27 +45,19 @@ public class Timestamp extends RealmObject {
         Client_ID = client_ID;
     }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Time getArrival() {
+    public String getArrival() {
         return arrival;
     }
 
-    public void setArrival(Time arrival) {
+    public void setArrival(String arrival) {
         this.arrival = arrival;
     }
 
-    public Time getDeparture() {
+    public String getDeparture() {
         return departure;
     }
 
-    public void setDeparture(Time departure) {
+    public void setDeparture(String departure) {
         this.departure = departure;
     }
 }

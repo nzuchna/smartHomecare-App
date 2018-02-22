@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /*******************************************
 
@@ -138,9 +139,14 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
         // Initialize Realm (just once per application)
         Realm.init(context);
 
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+                .name("smartHomecare.realm")
+                .schemaVersion(0)
+                .build();
+        Realm.setDefaultConfiguration(realmConfig);
         //TODO: Own class for DB Con's? or just methods??
         // Get a Realm instance for this thread
-        ///Realm realm = Realm.getDefaultInstance();
+        Realm realm = Realm.getDefaultInstance();
     }
 
     //Start the scan for beacons (On pressing the 'Start' Button)
@@ -251,8 +257,8 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                     //       beaconParserList.get(1).getBeaconAdvertisementData()
                     //)));
                     for (int i = 0; i < s; i++) {
-                        //Log.i(TAG, "Time:"+timeStamp+" Address: " + beaconArr[i].getBluetoothAddress()
-                        //      + " RSSI: " + beaconArr[i].getRssi() + " Marker: " + clickCount);
+                        Log.i(TAG, "Time:"+timeStamp+" Address: " + beaconArr[i].getBluetoothAddress()
+                              + "Beacon Address:" + beaconArr[i].getBluetoothAddress());
                         logToDisplay(Long.toString(timeStamp),              //Adding the information to the screen
                                 beaconArr[i].getBluetoothAddress(),
                                 Integer.toString(beaconArr[i].getRssi()),
@@ -342,6 +348,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                 Toast.LENGTH_SHORT).show();
     }
 
+    /*
     private void timestampToDatabase(Timestamp timestamp){
         // Get a Realm instance for this thread
         Realm realm = Realm.getDefaultInstance();
@@ -350,7 +357,6 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
         Timestamp timestamp1 = realm.createObject(Person.class); // Create managed objects directly
         person.getDogs().add(managedDog);
         realm.commitTransaction();
-
     }
-
+*/
 }

@@ -39,4 +39,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //Networking
+    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    //Only necessary if realm adapters are used
+    compile 'io.realm:android-adapters:2.0.0'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
 }

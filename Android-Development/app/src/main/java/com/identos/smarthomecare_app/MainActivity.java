@@ -12,13 +12,28 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     public static final String EXTRA_MESSAGE = "com.identos.smarthomecare_app";
     private static final int REQUEST_SIGNUP = 0;
+
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    private OkHttpClient client;
+    private Request request;
+    private String url = "http://192.168.137.1/webservice.php";
 
     @BindView(R.id.edtEmail)
     EditText edtEmail;
@@ -45,11 +60,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: Implement: Stay signed in function
     }
 
-    public void scanBLEDevices(View view){
-            Intent intent = new Intent(this, MonitoringActivity.class);
-            startActivity(intent);
-    }
-
     public void login() {
         Log.d(TAG, "Login");
 
@@ -69,8 +79,38 @@ public class MainActivity extends AppCompatActivity {
         String email = edtEmail.getText().toString();
         String password = edtPassword.getText().toString();
 
-        // TODO: Implement authentication logic here.
+        client = new OkHttpClient();
+        RequestBody body = RequestBody.create(JSON, loginJson(email, password));
+        request = new Request.Builder().url(url).post(body).build();
 
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.i(TAG, response.body().string());
+            }
+        });
+
+        /*
+        Login example = new Login();
+        String json = example.loginJson(email, password);
+        //String response = null;
+        try {
+            example.post("http://192.168.137.1/webservice.php", json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //System.out.println(response);
+        Log.d(TAG, "At least something...");
+*/
+
+        //TODO: Complete login process
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
@@ -90,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
                 // TODO: Implement successful signup logic here
                 // By default we just finish the Activity and log them in automatically
                 Intent intent = new Intent(this, BeaconActivity.class);
+                Log.i(TAG, "onActivityResult");
                 // TODO: Put login information into intend with the following code...
                 //EditText editText = (EditText) findViewById(R.id.editText);
                 //String message = editText.getText().toString();
@@ -110,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         btnSignIn.setEnabled(true);
         Intent intent = new Intent(this, BeaconActivity.class);
         startActivity(intent);
+        Log.i(TAG, "onLoginSuccess");
         //finish();
     }
 
@@ -132,5 +174,12 @@ public class MainActivity extends AppCompatActivity {
             edtEmail.setError(null);
         }
         return valid;
+    }
+
+    public String loginJson(String email, String password) {
+        return "{'tag':'login',"
+                + "'email':'" + email + "',"
+                + "'password': '" + password + "'"
+                + "}";
     }
 }
