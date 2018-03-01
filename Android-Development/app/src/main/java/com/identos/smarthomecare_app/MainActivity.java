@@ -18,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
     private Request request;
-    private String url = "http://192.168.137.1/webservice.php";
+    private String url = "http://192.168.137.1/test.php";
 
     @BindView(R.id.edtEmail)
     EditText edtEmail;
@@ -81,7 +82,17 @@ public class MainActivity extends AppCompatActivity {
 
         client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, loginJson(email, password));
-        request = new Request.Builder().url(url).post(body).build();
+        /*RequestBody body = new FormBody.Builder()
+                .add("tag", "test")
+                .build();
+                */
+        request = new Request.Builder()
+                .url(url)
+                .put(body)
+                .tag("test")
+                .build();
+
+        //Log.i(TAG,request.toString());
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -177,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String loginJson(String email, String password) {
-        return "{'tag':'login',"
+        return "{'tag':'test',"
                 + "'email':'" + email + "',"
                 + "'password': '" + password + "'"
                 + "}";
