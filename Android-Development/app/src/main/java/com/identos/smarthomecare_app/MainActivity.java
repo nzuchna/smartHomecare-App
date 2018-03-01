@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 
 import butterknife.BindView;
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
     private Request request;
-    private String url = "http://192.168.137.1/test.php";
+    private String url = "http://192.168.137.1/webservice.php";
 
     @BindView(R.id.edtEmail)
     EditText edtEmail;
@@ -81,7 +84,12 @@ public class MainActivity extends AppCompatActivity {
         String password = edtPassword.getText().toString();
 
         client = new OkHttpClient();
-        RequestBody body = RequestBody.create(JSON, loginJson(email, password));
+        RequestBody body = null;
+        try {
+            body = RequestBody.create(JSON, loginJson(email, password));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         /*RequestBody body = new FormBody.Builder()
                 .add("tag", "test")
                 .build();
@@ -89,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         request = new Request.Builder()
                 .url(url)
                 .put(body)
-                .tag("test")
+                .tag("login")
                 .build();
 
         //Log.i(TAG,request.toString());
@@ -187,10 +195,15 @@ public class MainActivity extends AppCompatActivity {
         return valid;
     }
 
-    public String loginJson(String email, String password) {
-        return "{'tag':'test',"
-                + "'email':'" + email + "',"
-                + "'password': '" + password + "'"
-                + "}";
+    public String loginJson(String email, String password) throws JSONException {
+        JSONObject obj = new JSONObject();
+
+        obj.put("tag", "login");
+        obj.put("email", email);
+        obj.put("password", password);
+
+        return obj.toString();
+
+        //return {"tag"":""login"",""email"":"email":""password"":"password""};
     }
 }
