@@ -258,7 +258,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                     //)));
                     for (int i = 0; i < s; i++) {
                         Log.i(TAG, "Time:"+timeStamp+" Address: " + beaconArr[i].getBluetoothAddress()
-                              + "Beacon Address:" + beaconArr[i].getBluetoothAddress());
+                              + "Beacon Address:" + beaconArr[i].getBluetoothAddress() + "Data Fields:" + beaconArr[i].getDataFields());
                         logToDisplay(Long.toString(timeStamp),              //Adding the information to the screen
                                 beaconArr[i].getBluetoothAddress(),
                                 Integer.toString(beaconArr[i].getRssi()),

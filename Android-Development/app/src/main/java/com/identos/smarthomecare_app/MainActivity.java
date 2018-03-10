@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);   //--> (..., view); --> Necessary if you are using fragments(?)
-
+        Intent i = new Intent(this, BeaconService.class);
+        startService(i);
         btnSignIn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
