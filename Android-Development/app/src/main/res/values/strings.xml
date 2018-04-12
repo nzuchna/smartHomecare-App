@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">smartHomecare-App</string>
+    <string name="app_name">smartHomecare</string>
     <string name="e_mail">example@mail.com</string>
     <string name="password">Password</string>
     <string name="apptitle">smartHomecare</string>
     <string name="sign_in">Sign in</string>
     <string name="stay_signed_in">Stay signed in</string>
     <string name="contentLogof1">smartHomecare Logo in #f1f1f1</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="title_activity_login">Sign in!</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -20,7 +20,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_beacon">BeaconActivity</string>
+    <string name="title_activity_beacon">BeaconActivity1</string>
 
     <!--Button names-->
     <string name="startButton">Start</string>
