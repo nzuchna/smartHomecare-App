@@ -129,7 +129,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                 setBeaconLayout("m:2-3=beac,i:4-19,i:20-21,i:22-23,p:24-24,d:25-25"));
         beaconManager.bind(this);
         beaconManager.setBackgroundScanPeriod(1000);
-        beaconManager.setBackgroundBetweenScanPeriod(1);
+        beaconManager.setBackgroundBetweenScanPeriod(10000);
 
         //Checking the compatibility of the device.
         verifyBluetooth();
@@ -243,7 +243,7 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
     @Override
     public void onBeaconServiceConnect() {
         beaconManager.setBackgroundScanPeriod(1000);
-        beaconManager.setBackgroundBetweenScanPeriod(1);
+        beaconManager.setBackgroundBetweenScanPeriod(10000);
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
@@ -271,7 +271,6 @@ public class BeaconActivity extends Activity implements BeaconConsumer {
                 }
             }
         });
-
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
         } catch (RemoteException e) {

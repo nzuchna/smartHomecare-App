@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
             = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
     private Request request;
-    private String url = "http://192.168.137.1/webservice.php";
+    private String url = "http://192.168.137.1/webservice1.2.php";
 
     @BindView(R.id.edtEmail)
     EditText edtEmail;
@@ -91,10 +91,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        /*RequestBody body = new FormBody.Builder()
-                .add("tag", "test")
-                .build();
-                */
         request = new Request.Builder()
                 .url(url)
                 .put(body)
@@ -108,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call call, IOException e) {
                 Log.i(TAG, e.getMessage());
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 Log.i(TAG, response.body().string());
@@ -198,13 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
     public String loginJson(String email, String password) throws JSONException {
         JSONObject obj = new JSONObject();
-
         obj.put("tag", "login");
         obj.put("email", email);
         obj.put("password", password);
-
         return obj.toString();
-
-        //return {"tag"":""login"",""email"":"email":""password"":"password""};
     }
 }

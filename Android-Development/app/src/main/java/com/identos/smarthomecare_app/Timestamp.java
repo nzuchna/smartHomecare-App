@@ -1,5 +1,7 @@
 package com.identos.smarthomecare_app;
 
+import android.util.Log;
+
 import java.sql.Time;
 import java.sql.Date;
 
@@ -11,6 +13,8 @@ import io.realm.annotations.PrimaryKey;
  */
 
 public class Timestamp extends RealmObject {
+
+    final static String TAG = "Timestamp";
 
     @PrimaryKey
     private int id;
@@ -27,6 +31,11 @@ public class Timestamp extends RealmObject {
     }
 
     public Timestamp() {
+    }
+
+    public boolean addTimestamp(long starttime, int client_ID) {
+        Log.i(TAG, "Starttime:" + starttime + " Client:" + client_ID);
+        return true;
     }
 
     public int getEmployee_ID() {

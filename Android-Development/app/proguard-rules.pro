@@ -19,3 +19,11 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#TODO: Uncomment if database doesn't keep information..?
+-keep Timestemp io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule Timestemp *
+-keep Timestemp io.realm.internal.Keep
+-keep @io.realm.internal.Keep Timestemp * { *; }
+-dontwarn javax.**
+-dontwarn io.realm.**
