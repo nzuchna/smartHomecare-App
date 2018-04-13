@@ -14,10 +14,11 @@ public class Timestamp extends RealmObject {
     final static String TAG = "Timestamp";
 
     private int Employee_ID;
-    private String Client_ID;
+    private int Client_ID;
     private long arrival;
     private long departure;
     private boolean Recording;
+    private boolean Delete;
 
     public boolean addTimestamp(long starttime, int client_ID) {
         Log.i(TAG, "Starttime:" + starttime + " Client:" + client_ID);
@@ -32,11 +33,11 @@ public class Timestamp extends RealmObject {
         Employee_ID = employee_ID;
     }
 
-    public String getClient_ID() {
+    public int getClient_ID() {
         return Client_ID;
     }
 
-    public void setClient_ID(String client_ID) {
+    public void setClient_ID(int client_ID) {
         Client_ID = client_ID;
     }
 

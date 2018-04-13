@@ -41,6 +41,7 @@ public class BeaconService extends Service implements BeaconConsumer {
     private BeaconManager beaconManager;
     //private Timestamp timestamp; //TODO: Read real client_id
 
+    public int counter;
     public long start;
     public BeaconEvent[] beacArr = new BeaconEvent[100];
     //public ArrayList<String> beacAdd = new ArrayList<String>();
@@ -54,7 +55,7 @@ public class BeaconService extends Service implements BeaconConsumer {
     public void onCreate() {
         super.onCreate();
         beaconManager = BeaconManager.getInstanceForApplication(this);
-        beaconManager.setBackgroundScanPeriod(1000);
+        beaconManager.setBackgroundScanPeriod(1500);
         beaconManager.setBackgroundBetweenScanPeriod(3000); //TODO : raise Time
         // To detect proprietary beacons, you must add a line like below corresponding to your beacon
         // type.  Do a web search for "setBeaconLayout" to get the proper expression.
@@ -69,7 +70,19 @@ public class BeaconService extends Service implements BeaconConsumer {
         RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(config);
         // Get a Realm instance for this thread
+
+        //Set a records to recording = false
         Realm realm = Realm.getDefaultInstance();
+        RealmQuery<Timestamp> query = realm.where(Timestamp.class);
+
+        query.equalTo("Recording", true);
+        RealmResults<Timestamp> stillRecording = query.findAll();
+
+        realm.beginTransaction();
+        for (int i = 0; i < stillRecording.size(); i++) {
+            stillRecording.get(i).setRecording(false);
+        }
+        realm.commitTransaction();
     }
 
     @Override
@@ -102,53 +115,6 @@ public class BeaconService extends Service implements BeaconConsumer {
 
     @Override
     public void onBeaconServiceConnect() {
-        /*
-        beaconManager.addMonitorNotifier(new MonitorNotifier() {
-            @Override
-            public void didEnterRegion(Region region) {
-
-                start = System.currentTimeMillis();
-                beacArr[beaconIndex].setBeacAdd(region.getBluetoothAddress());
-                beacArr[beaconIndex].setStartTime(start);
-                beaconIndex++;
-                currentBeacons++;
-                Log.i(TAG, "Timestemp Record started: " + beacArr[beaconIndex-1].getStartTime() + " BluetoothAdd: " + beacArr[beaconIndex-1].getBeacAdd());
-                stopForeground(true);
-                builder.setContentText("Beacons in range: " + currentBeacons);
-                startForeground(1, builder.build());
-
-                //timestamp.addTimestamp(start, client_id);
-                //Check if Beacon is relevant
-                Log.i(TAG, "I just saw an beacon for the first time!");
-            }
-
-            @Override
-            public void didExitRegion(Region region) {
-
-                long end =  System.currentTimeMillis();
-                int indexOf = -1;
-                for(int i = 0; i <= beacArr.length; i++){
-                    if(beacArr[i].getBeacAdd() == region.getBluetoothAddress()){
-                        indexOf = i;
-                        break;
-                    }
-                }
-                if(indexOf == -1){
-                    Log.i(TAG, "Error code: -1");
-                }
-                Log.i(TAG, "Timestemp Record ended: " + end + " After: " + (end - beacArr[indexOf].getStartTime()) + " Beacon Address: " + beacArr[indexOf].getBeacAdd());
-                currentBeacons--;
-                builder = BeaconService.this.builder.setContentText("Beacons in range: " + currentBeacons);
-
-                Log.i(TAG, "I no longer see an beacon");
-            }
-
-            @Override
-            public void didDetermineStateForRegion(int state, Region region) {
-                Log.i(TAG, "I have just switched from seeing/not seeing beacons: "+state);
-            }
-        });
-        */
 
         beaconManager.addRangeNotifier(new RangeNotifier() {
             @Override
@@ -159,100 +125,68 @@ public class BeaconService extends Service implements BeaconConsumer {
                 int recordingBeacons = 0;
 
                 if (beacons.size() > 0) {
-                    for(int i = 0; i < beacons.size(); i++){
-                        final int y = i; //what a beauty of solution
+                    for(counter = 0; counter < beacons.size(); counter++){
+                        //final int y = i; //what a beauty of solution
 
-                        RealmQuery<Timestamp> recorded = realm.where(Timestamp.class);
+                        //RealmQuery<Timestamp> recorded = realm.where(Timestamp.class);
                         RealmQuery<Timestamp> recording = realm.where(Timestamp.class);
 
-                        recorded.equalTo("Client_ID", beaconArr[i].getBluetoothAddress());
-                        recorded.and().equalTo("Recording", false);
-                        recording.equalTo("Client_ID", beaconArr[i].getBluetoothAddress());
+                        //recorded.equalTo("Client_ID", beaconArr[i].getBluetoothAddress());
+                        //recorded.and().equalTo("Recording", false);
+                        recording.equalTo("Client_ID", beaconArr[counter].getManufacturer());
                         recording.and().equalTo("Recording", true);
 
-                        RealmResults<Timestamp> recordedThisClient = recorded.findAll();
+                        //RealmResults<Timestamp> recordedThisClient = recorded.findAll();
                         RealmResults<Timestamp> recordingThisClient = recording.findAll();
 
                         //Case 1: Beacon just entered region
-                        if (recordingThisClient == null) {
+                        if (recordingThisClient.size() == 0) {
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
                                     Timestamp timestamp = realm.createObject(Timestamp.class);
                                     timestamp.setArrival(System.currentTimeMillis());
-                                    timestamp.setClient_ID(beaconArr[y].getBluetoothAddress());
+                                    timestamp.setClient_ID(beaconArr[counter].getManufacturer());
                                     timestamp.setRecording(true);
                                 }
                             });
-                            Log.i(TAG, "Beacon:" + beaconArr[i].getBluetoothAddress()+" just entered region.");
+                            Log.i(TAG, "Beacon:" + beaconArr[counter].getManufacturer()+" just entered region.");
                         }
                         //Case 2: Beacon still in region
-                        if (recordingThisClient != null) {
+                        if (recordingThisClient.size() == 1) {
                             recordingBeacons++;     //Still recording...
-                            Log.i(TAG, "Beacon:" + beaconArr[i].getBluetoothAddress()+" still in region.");
+                            Log.i(TAG, "Beacon:" + beaconArr[counter].getManufacturer()+" still in region.");
                         }
-                        //TODO: Case 4: Beacon left short time ago
+                        else {
+                            Log.i(TAG, "Error after Case 2! More than one time recording.");
+                        }
                     }
                     Log.i(TAG, "Number of Beacons in region:" + recordingBeacons);
-                    /*
+
                     //Case 3: Beacon just left region
-                    RealmQuery<Timestamp> lastRecorded = realm.where(Timestamp.class);
-                    lastRecorded.equalTo("Recording", true);
-                    RealmResults<Timestamp> lastRecords = lastRecorded.findAll();
-                    RealmQuery<Timestamp> query = lastRecords.where();
-                    for(int i = 0; i < lastRecords.size(); i++) {
-
-                        if (lastRecords.equals("Client_ID", beaconArr[i].getBluetoothAddress())){
-
+                    RealmQuery<Timestamp> recording = realm.where(Timestamp.class);
+                    recording.equalTo("Recording", true);
+                    RealmResults<Timestamp> recordingAll = recording.findAll();
+                    for(int i = 0; i < recordingAll.size(); i++) {
+                        Boolean inRegion = false;
+                        for(int y = 0; y < beaconArr.length; y++) {
+                            if (recordingAll.get(i).getClient_ID() == beaconArr[y].getManufacturer()){
+                                inRegion = true;
+                            }
                         }
-                        else {  //
-
+                        if(inRegion == false) {
+                            realm.beginTransaction();
+                            recordingAll.get(i).setRecording(false);
+                            recordingAll.get(i).setDeparture(System.currentTimeMillis());
+                            realm.commitTransaction();
+                            Log.i(TAG, "Timestamp with Client: " + recordingAll.get(i).getClient_ID() + " was recorded successfully!");
                         }
                     }
-                    */
-
-                    long timeStamp = System.currentTimeMillis() - baseTime;
-
-
-                    //Obtaining the list of beacons heard
-//                    List<BeaconParser> beaconParserList = beaconManager.getBeaconParsers();
-//                    Log.d(TAG,Long.toString(beaconParserList.get(0).getDataFieldCount()));
-//                    Log.d(TAG,Long.toString(beaconParserList.get(1).bytesToHex(
-//                           beaconParserList.get(1).getBeaconAdvertisementData()
-//                    )));
-                    /*
-                    for (int i = 0; i < s; i++) {
-                        Log.i(TAG, "Time:"+timeStamp+" Address: " + beaconArr[i].getBluetoothAddress()
-                                + "Beacon Address:" + beaconArr[i].getBluetoothAddress() + "UUID:" + beaconArr[i].getServiceUuid());
-                       /* logToDisplay(Long.toString(timeStamp),              //Adding the information to the screen
-                                beaconArr[i].getBluetoothAddress(),
-                                Integer.toString(beaconArr[i].getRssi()),
-                                Integer.toString(clickCount));
-                        data.add(new String[]{Long.toString(timeStamp),     //Appending the information to the data variable
-                                beaconArr[i].getBluetoothAddress(),
-                                Integer.toString(beaconArr[i].getRssi()),
-                                Integer.toString(clickCount)});
-                    }*/
+                    //TODO: Case 4: Beacon left short time ago
                 }
                 else{
                     Log.i(TAG, "Currently no beacons in sight");
                 }
-//                // Asynchronously update objects on a background thread
-//                realm.executeTransactionAsync(new Realm.Transaction() {
-//                    @Override
-//                    public void execute(Realm bgRealm) {
-//                        Dog dog = bgRealm.where(Dog.class).equalTo("age", 1).findFirst();
-//                        dog.setAge(3);
-//                    }
-//                }, new Realm.Transaction.OnSuccess() {
-//                    @Override
-//                    public void onSuccess() {
-//                        // Original queries and Realm objects are automatically updated.
-//                        puppies.size(); // => 0 because there are no more puppies younger than 2 years old
-//                        managedDog.getAge();   // => 3 the dogs age is updated
-//                    }
-//                });
-
             }
         });
         baseTime = System.currentTimeMillis();
