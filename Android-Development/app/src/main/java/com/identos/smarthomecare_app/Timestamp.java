@@ -2,9 +2,6 @@ package com.identos.smarthomecare_app;
 
 import android.util.Log;
 
-import java.sql.Time;
-import java.sql.Date;
-
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
@@ -16,22 +13,11 @@ public class Timestamp extends RealmObject {
 
     final static String TAG = "Timestamp";
 
-    @PrimaryKey
-    private int id;
     private int Employee_ID;
-    private int Client_ID;
-    private String arrival;
-    private String departure;
-
-    public Timestamp(int employee_ID, int client_ID, String arrival, String departure) {
-        Employee_ID = employee_ID;
-        Client_ID = client_ID;
-        this.arrival = arrival;
-        this.departure = departure;
-    }
-
-    public Timestamp() {
-    }
+    private String Client_ID;
+    private long arrival;
+    private long departure;
+    private boolean Recording;
 
     public boolean addTimestamp(long starttime, int client_ID) {
         Log.i(TAG, "Starttime:" + starttime + " Client:" + client_ID);
@@ -46,27 +32,35 @@ public class Timestamp extends RealmObject {
         Employee_ID = employee_ID;
     }
 
-    public int getClient_ID() {
+    public String getClient_ID() {
         return Client_ID;
     }
 
-    public void setClient_ID(int client_ID) {
+    public void setClient_ID(String client_ID) {
         Client_ID = client_ID;
     }
 
-    public String getArrival() {
+    public long getArrival() {
         return arrival;
     }
 
-    public void setArrival(String arrival) {
+    public void setArrival(long arrival) {
         this.arrival = arrival;
     }
 
-    public String getDeparture() {
+    public long getDeparture() {
         return departure;
     }
 
-    public void setDeparture(String departure) {
+    public void setDeparture(long departure) {
         this.departure = departure;
+    }
+
+    public boolean isRecording() {
+        return Recording;
+    }
+
+    public void setRecording(boolean recording) {
+        Recording = recording;
     }
 }
